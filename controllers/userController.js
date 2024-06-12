@@ -46,7 +46,6 @@ export const Register = async(req, res) => {
         });
     }
 };
-
 export const Login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -77,10 +76,7 @@ export const Login = async (req, res) => {
 
         // Set cookie options
         const cookieOptions = {
-            httpOnly: true,
             maxAge: 24 * 60 * 60 * 1000, 
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict'  
         };
 
         // Send response with cookie
@@ -100,6 +96,8 @@ export const Login = async (req, res) => {
         });
     }
 };
+
+
 export const Logout = (req, res) => {
     return res.cookie("token", " ", { expiresIn: new Date(Date.now()) }).json({
         message: "Logout succesflly",
