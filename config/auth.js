@@ -1,8 +1,8 @@
-import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
 dotenv.config();
 
-const isAuthenticated = async(req, res, next) => {
+const isAuthenticated = async (req, res, next) => {
     try {
         const token = req.cookies.token;
         if (!token) {
@@ -11,16 +11,16 @@ const isAuthenticated = async(req, res, next) => {
                 success: false
             });
         }
-        const decoded = jwt.verify(token, " TRFGVBHNJKLDSHJBDSCKJ");
-        req.user = decoded.id;
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = decoded.userId;
         next();
     } catch (error) {
-        console.error(error.message);
+        console.error(`Error during authentication: ${error.message}`, error);
         return res.status(401).json({
             message: "Token invalid",
             success: false
         });
     }
-}
+};
 
 export default isAuthenticated;
