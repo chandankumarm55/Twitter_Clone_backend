@@ -47,11 +47,12 @@ export const Register = async(req, res) => {
     }
 };
 
-export const Login = async(req, res) => {
+export const Login = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        const user = await User.findOne({ email })
+        // Find user by email
+        const user = await User.findOne({ email });
         if (!user) {
             return res.status(401).json({
                 message: 'No user found',
@@ -59,30 +60,46 @@ export const Login = async(req, res) => {
             });
         }
 
+        // Compare the provided password with the stored hash
         const isMatch = await bcryptjs.compare(password, user.password);
         if (!isMatch) {
             return res.status(401).json({
-                message: 'incorret  Password ',
+                message: 'Incorrect Password',
                 success: false
             });
         }
+
+        // Create JWT token
         const tokenData = {
             userId: user._id
-        }
-        const token = await jwt.sign(tokenData, " TRFGVBHNJKLDSHJBDSCKJ", { expiresIn: "1d" });
-        res.status(201).cookie("token", token, { expiresIn: "id", httpOnly: true }).json({
-            message: "Login succesfully",
+        };
+        const token = jwt.sign(tokenData, process.env.JWT_SECRET, { expiresIn: "1d" });
+
+        // Set cookie options
+        const cookieOptions = {
+            httpOnly: true,
+            maxAge: 24 * 60 * 60 * 1000, 
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict'  
+        };
+
+        // Send response with cookie
+        res.status(201).cookie("token", token, cookieOptions).json({
+            message: "Login successfully",
             user,
             success: true
-        })
+        });
 
-
+        console.log(token);
 
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        res.status(500).json({
+            message: "Internal server error",
+            success: false
+        });
     }
-}
-
+};
 export const Logout = (req, res) => {
     return res.cookie("token", " ", { expiresIn: new Date(Date.now()) }).json({
         message: "Logout succesflly",
