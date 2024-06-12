@@ -23,6 +23,7 @@ const corsOptions = {
     origin: "https://twitter-clonefrontend.netlify.app",
     credentials: true
 }
+console.log(corsOptions)
 app.use(cors(corsOptions))
 
 app.use("/api/user", useRoute);
