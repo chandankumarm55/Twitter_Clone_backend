@@ -45,58 +45,42 @@ export const Register = async(req, res) => {
             success: false
         });
     }
-};
-export const Login = async (req, res) => {
+};export const Login = async (req, res) => {
     try {
         const { email, password } = req.body;
-
-        // Find user by email
+        if (!email || !password) {
+            return res.status(401).json({
+                message: "All fields are required.",
+                success: false
+            })
+        };
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(401).json({
-                message: 'No user found',
+                message: "Incorrect email or password",
                 success: false
-            });
+            })
         }
-
-        // Compare the provided password with the stored hash
         const isMatch = await bcryptjs.compare(password, user.password);
         if (!isMatch) {
             return res.status(401).json({
-                message: 'Incorrect Password',
+                message: "Incorect email or password",
                 success: false
             });
         }
-
-        // Create JWT token
         const tokenData = {
             userId: user._id
-        };
-        const token = jwt.sign(tokenData, process.env.JWT_SECRET, { expiresIn: "1d" });
-
-        // Set cookie options
-        const cookieOptions = {
-            maxAge: 24 * 60 * 60 * 1000, 
-        };
-
-        // Send response with cookie
-        res.status(201).cookie("token", token, cookieOptions).json({
-            message: "Login successfully",
+        }
+        const token = await jwt.sign(tokenData, process.env.TOKEN_SECRET, { expiresIn: "1d" });
+        return res.status(201).cookie("token", token, { expiresIn: "1d", httpOnly: true }).json({
+            message: `Welcome back ${user.name}`,
             user,
             success: true
-        });
-
-        console.log(token);
-
+        })
     } catch (error) {
         console.log(error);
-        res.status(500).json({
-            message: "Internal server error",
-            success: false
-        });
     }
-};
-
+}
 
 export const Logout = (req, res) => {
     return res.cookie("token", " ", { expiresIn: new Date(Date.now()) }).json({
