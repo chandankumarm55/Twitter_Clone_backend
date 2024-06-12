@@ -12,10 +12,10 @@ const isAuthenticated = async (req, res, next) => {
                 success: false
             });
         }
-console.log(token)
+          console.log('token in auth js',token)
         const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
         req.user = decoded.userId;
-        console.log(req.user)
+        console.log('req user',req.user)
         next();
     } catch (error) {
         console.log(error);
