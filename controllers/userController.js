@@ -45,42 +45,56 @@ export const Register = async(req, res) => {
             success: false
         });
     }
-};export const Login = async (req, res) => {
+};
+
+export const Login = async (req, res) => {
     try {
         const { email, password } = req.body;
         if (!email || !password) {
             return res.status(401).json({
                 message: "All fields are required.",
                 success: false
-            })
-        };
+            });
+        }
+
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(401).json({
                 message: "Incorrect email or password",
                 success: false
-            })
+            });
         }
+
         const isMatch = await bcryptjs.compare(password, user.password);
         if (!isMatch) {
             return res.status(401).json({
-                message: "Incorect email or password",
+                message: "Incorrect email or password",
                 success: false
             });
         }
-        const tokenData = {
-            userId: user._id
-        }
-        const token = await jwt.sign(tokenData, process.env.TOKEN_SECRET, { expiresIn: "1d" });
-        return res.status(201).cookie("token", token, { expiresIn: "1d", httpOnly: true }).json({
+
+        const tokenData = { userId: user._id };
+        const token = jwt.sign(tokenData, process.env.TOKEN_SECRET, { expiresIn: "1d" });
+
+        return res.status(200).cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production", // set secure flag in production
+            sameSite: "None", // necessary for cross-site cookie
+            maxAge: 24 * 60 * 60 * 1000 // 1 day in milliseconds
+        }).json({
             message: `Welcome back ${user.name}`,
             user,
             success: true
-        })
+        });
     } catch (error) {
         console.log(error);
+        return res.status(500).json({
+            message: "Internal server error",
+            success: false
+        });
     }
 }
+
 
 export const Logout = (req, res) => {
     return res.cookie("token", " ", { expiresIn: new Date(Date.now()) }).json({
