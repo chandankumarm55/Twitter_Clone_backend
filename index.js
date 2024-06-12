@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 const corsOptions = {
-    origin: process.env.FRONT_END_URL,
+    origin: "https://twitter-clonefrontend.netlify.app",
     credentials: true
 }
 app.use(cors(corsOptions))
