@@ -16,18 +16,11 @@ app.use(express.json());
 app.use(cookieParser());
 
 const corsOptions = {
-<<<<<<< HEAD
-    origin: 'http://localhost:3000',
-    credentials: true
+origin: "https://twitter-clonefrontend.netlify.app", // Ensure this matches your frontend URL
+    credentials: true // Allow credentials (cookies, etc.)
 }
 app.use(cors(corsOptions))
-=======
-    origin: "https://twitter-clonefrontend.netlify.app", // Ensure this matches your frontend URL
-    credentials: true // Allow credentials (cookies, etc.)
-};
 
-app.use(cors(corsOptions));
->>>>>>> ae159eaad1b6847ab8de2f2aa811af067823e9de
 
 app.use("/api/user", useRoute);
 app.use("/api/tweet", tweetRoute);
