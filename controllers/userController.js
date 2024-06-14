@@ -70,13 +70,11 @@ export const Login = async(req, res) => {
             userId: user._id
         }
         const token = await jwt.sign(tokenData, " TRFGVBHNJKLDSHJBDSCKJ", { expiresIn: "1d" });
-        res.status(201).cookie("token", token, { expiresIn: "id", httpOnly: true }).json({
+        res.status(201).cookie("token", token, { expiresIn: "1d", httpOnly: true }).json({
             message: "Login succesfully",
             user,
             success: true
         })
-
-
 
     } catch (error) {
         console.log(error)
