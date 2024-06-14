@@ -79,9 +79,8 @@ export const Login = async (req, res) => {
 
         return res.status(200).cookie("token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production", // set secure flag in production
-            sameSite: "None", // necessary for cross-site cookie
-            maxAge: 24 * 60 * 60 * 1000 // 1 day in milliseconds
+            sameSite: "None", 
+            maxAge: 7*24 * 60 * 60 * 1000 // 1 day in milliseconds
         }).json({
             message: `Welcome back ${user.name}`,
             user,
