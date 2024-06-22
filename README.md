@@ -72,8 +72,3 @@ A full-stack Twitter clone built with the MERN stack, featuring secure authentic
 3. Start the frontend development server.
 4. Open your browser and navigate to `http://localhost:3000`.
 
-## Contributing
-Contributions are welcome! Please open an issue or submit a pull request for any changes.
-
-## License
-This project is licensed under the MIT License.
